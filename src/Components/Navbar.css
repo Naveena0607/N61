@@ -1,0 +1,26 @@
+/* Navbar.module.css */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #690815;
+    padding: 1rem;
+}
+
+.navLink {
+    color: white;
+    text-decoration: none;
+    margin: 0 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navLink:hover {
+    color: #00bcd4;
+}
+
+.activeLink {
+    color: #ff9800;
+
+}
