@@ -3,17 +3,16 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 function Navbar() {
-
     const { isLoggedIn, logout } = useAuth();
     const navigate = useNavigate();
-    const [sessionTimeout, setSessionTimeout] = useState(false); // To track session timeout state
-
+    const [sessionTimeout, setSessionTimeout] = useState(false);
     const [isTokenValid, setIsTokenValid] = useState(true);
-   const [showPopup, setShowPopup] = useState(false);
-   useEffect(() => {
+    const [showPopup, setShowPopup] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage the mobile menu
+
+    useEffect(() => {
         const token = localStorage.getItem("token");
 
-        // Redirect to login page if no token is found
         if (!token) {
             setIsTokenValid(false);
             navigate("/");
@@ -21,62 +20,61 @@ function Navbar() {
         }
 
         const expiration = localStorage.getItem("tokenExpiration");
-    const remainingTime = expiration - Date.now();
+        const remainingTime = expiration - Date.now();
 
-    if (remainingTime <= 0) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("tokenExpiration");
-        setIsTokenValid(false); // Invalidate session
-        navigate("/"); // Redirect to login
-        return;
-    }
+        if (remainingTime <= 0) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("tokenExpiration");
+            setIsTokenValid(false);
+            navigate("/");
+            return;
+        }
 
-    // Trigger popup message 10 seconds before timeout
-    const popupId = setTimeout(() => {
-        setShowPopup(true); // Show the popup message
-        setTimeout(() => {
-            setShowPopup(false); // Hide popup after 3 second
-        }, 3000);
-    }, remainingTime - 10000); // 10 seconds before timeout
+        const popupId = setTimeout(() => {
+            setShowPopup(true);
+            setTimeout(() => {
+                setShowPopup(false);
+            }, 3000);
+        }, remainingTime - 10000);
 
-    // Timeout to log out the user after the remaining session time
-    const timeoutId = setTimeout(() => {
-        localStorage.removeItem("token"); // Clear token
-        localStorage.removeItem("tokenExpiration");
-        setSessionTimeout(true); // Show timeout message
-        setIsTokenValid(false); // Invalidate session
-        navigate("/"); // Redirect to login
-    }, remainingTime);
+        const timeoutId = setTimeout(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("tokenExpiration");
+            setSessionTimeout(true);
+            setIsTokenValid(false);
+            navigate("/");
+        }, remainingTime);
 
-        // Cleanup function to clear timeout when component unmounts
         return () => {
             clearTimeout(popupId);
             clearTimeout(timeoutId);
         };
     }, []);
 
-
     const handleLogout = () => {
-        logout(); // Call the logout function
-        navigate("/"); // Redirect to the homepage or login page
+        logout();
+        navigate("/");
+    };
+
+    const handleMenuToggle = () => {
+        setIsMenuOpen((prev) => !prev);
     };
 
     const navbarStyle = {
         display: "flex",
-        justifyContent: "space-between", // Space between links and logout button
-        backgroundColor: "#6ccbd6",
+        justifyContent: "space-between",
         alignItems: "center",
-        background: "linear-gradient(90deg, #6ccbd6, #9e1f34)", // Gradient background
+        background: "linear-gradient(90deg, #6ccbd6, #9e1f34)",
         padding: "1rem 2rem",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        height: "60px", // Increase height of the navbar
+        height: "60px",
     };
 
     const navLinkStyle = {
         color: "#890d19",
         textDecoration: "none",
-        margin: "0 25px", // Adds spacing between items
-        fontSize: "1.8rem",
+        margin: "0 15px",
+        fontSize: "1.2rem",
         fontWeight: "bold",
         transition: "color 0.3s ease",
     };
@@ -86,23 +84,24 @@ function Navbar() {
         textDecoration: "underline",
     };
 
-    const logoutButtonStyle = {
+    const logoutNavLinkStyle = {
         color: "white",
         backgroundColor: "#9e1f34",
-        border: "none",
         padding: "0.5rem 1rem",
         borderRadius: "5px",
-        cursor: "pointer",
-        fontSize: "1.5rem",
+        textDecoration: "none",
+        fontSize: "1rem",
         fontWeight: "bold",
+        display: "inline-block", // Makes it behave like a button
     };
-   const popupStyle ={
+
+    const popupStyle = {
         position: "fixed",
-        top:"20%",
+        top: "20%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        backgroundColor: "#690815",  // Solid background color
-        color: "white",  // Text color
+        backgroundColor: "#690815",
+        color: "white",
         fontSize: "18px",
         borderRadius: "8px",
         zIndex: "1000",
@@ -110,50 +109,135 @@ function Navbar() {
         width: "700px",
         padding: "10px",
         textAlign: "center",
-    }
-    
+    };
 
+    const mobileMenuStyle = {
+        display: isMenuOpen ? "block" : "none",
+        backgroundColor: "#ffffff",
+        position: "absolute",
+        top: "60px",
+        left: "0",
+        width: "100%",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        zIndex: "1000",
+    };
+
+    const hamburgerStyle = {
+        cursor: "pointer",
+        display: "none", // Hide by default
+        fontSize: "1.5rem",
+        color: "#ffffff",
+    };
+
+    // Media query styles
+    const mediaQuery = `
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+    `;
 
     return (
-        <div style={navbarStyle}>
-             {showPopup && (
-                <div style={popupStyle}>
-                    <p>Your session will expire in 10 seconds. Please save your work.</p>
+        <>
+            <style>{mediaQuery}</style>
+            <div style={navbarStyle}>
+                {showPopup && (
+                    <div style={popupStyle}>
+                        <p>Your session will expire in 10 seconds. Please save your work.</p>
+                    </div>
+                )}
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span
+                        className="hamburger"
+                        style={hamburgerStyle}
+                        onClick={handleMenuToggle}
+                    >
+                        ☰
+                    </span>
+                    <div className="nav-links" style={{ display: "flex" }}>
+                        <NavLink
+                            to="/dashboard"
+                            style={({ isActive }) =>
+                                isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                            }
+                        >
+                            Dashboard
+                        </NavLink>
+                        <NavLink
+                            to="/summary"
+                            style={({ isActive }) =>
+                                isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                            }
+                        >
+                            Summary
+                        </NavLink>
+                        <NavLink
+                            to="/report"
+                            style={({ isActive }) =>
+                                isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                            }
+                        >
+                            Report
+                        </NavLink>
+                    </div>
+                </div>
+
+                {isLoggedIn && (
+                    <NavLink
+                        to="/"
+                        style={logoutNavLinkStyle}
+                        onClick={handleLogout} // Trigger logout on click
+                    >
+                        Logout
+                    </NavLink>
+                )}
+            </div>
+
+            {isMenuOpen && (
+                <div style={mobileMenuStyle}>
+                    <NavLink
+                        to="/dashboard"
+                        style={({ isActive }) =>
+                            isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                        }
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Dashboard
+                    </NavLink>
+                    <NavLink
+                        to="/summary"
+                        style={({ isActive }) =>
+                            isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                        }
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Summary
+                    </NavLink>
+                    <NavLink
+                        to="/report"
+                        style={({ isActive }) =>
+                            isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
+                        }
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Report
+                    </NavLink>
+                    <NavLink
+                        to="/"
+                        style={logoutNavLinkStyle}
+                        onClick={handleLogout} // Trigger logout in mobile view
+                    >
+                        Logout
+                    </NavLink>
                 </div>
             )}
-            <div>
-            <NavLink
-                to="/dashboard"
-                style={({ isActive }) =>
-                    isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
-                }
-            >
-                Dashboard
-            </NavLink>
-            <NavLink
-                to="/summary"
-                style={({ isActive }) =>
-                    isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
-                }
-            >
-                Summary
-            </NavLink>
-            <NavLink
-                to="/report"
-                style={({ isActive }) =>
-                    isActive ? { ...navLinkStyle, ...activeLinkStyle } : navLinkStyle
-                }
-            >
-                Report
-            </NavLink>
-            </div>
-            {isLoggedIn && (
-                <button style={logoutButtonStyle} onClick={handleLogout}>
-                    Logout
-                </button>
-            )}
-        </div>
-        
+        </>
     );
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -89,21 +89,12 @@ function Dashboard() {
 
 const styles = {
     container: {
-        padding: "30px",
+        padding: "20px",
         fontFamily: "'Arial', sans-serif",
-        maxWidth: "1500px",
-        margin: "30px auto",
+        maxWidth: "1200px",
+        margin: "20px auto",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         animation: "fadeIn 2s ease-in",
-    },
-    timeoutMessage: {
-        textAlign: "center",
-        backgroundColor: "#f8d7da",
-        color: "#721c24",
-        padding: "10px",
-        borderRadius: "6px",
-        marginBottom: "20px",
-        border: "1px solid #f5c6cb",
     },
     header: {
         textAlign: "center",
@@ -118,7 +109,6 @@ const styles = {
         backgroundColor: "#ffffff",
         borderRadius: "6px",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        animation: "fadeIn 2s ease-in",
     },
     subHeader: {
         fontSize: "20px",
@@ -127,13 +117,14 @@ const styles = {
         marginBottom: "10px",
     },
     text: {
-        fontSize: "20px",
+        fontSize: "16px",
         color: "#555",
         marginBottom: "10px",
     },
     link: {
         color: "#3498db",
         textDecoration: "none",
+        wordWrap: "break-word",
     },
     tableContainer: {
         overflowX: "auto",
@@ -148,14 +139,31 @@ const styles = {
         color: "#fff",
         padding: "10px",
         textAlign: "left",
+        fontSize: "14px",
     },
     tableCell: {
         padding: "10px",
         textAlign: "left",
         borderBottom: "1px solid #ddd",
+        fontSize: "14px",
     },
-    
+    "@media (max-width: 768px)": {
+        container: {
+            padding: "10px",
+        },
+        header: {
+            fontSize: "20px",
+        },
+        text: {
+            fontSize: "14px",
+        },
+        tableHeader: {
+            fontSize: "12px",
+        },
+        tableCell: {
+            fontSize: "12px",
+        },
+    },
 };
 
 export default Dashboard;
-

@@ -32,7 +32,7 @@ function Login() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:3000/register", {
+            await axios.post("http://157.245.113.57:3000/register", {
                 username,
                 password,
             });            

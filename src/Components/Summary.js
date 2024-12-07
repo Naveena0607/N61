@@ -3,10 +3,19 @@ import { Line, Pie, Radar, Doughnut } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Import Chart.js related modules
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, ArcElement, CategoryScale, LinearScale, RadialLinearScale } from 'chart.js';
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    PointElement,
+    ArcElement,
+    CategoryScale,
+    LinearScale,
+    RadialLinearScale,
+} from "chart.js";
 
-// Register chart.js components
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, ArcElement, CategoryScale, LinearScale, RadialLinearScale);
 
 function Summary() {
@@ -19,30 +28,26 @@ function Summary() {
         const fetchChartData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                    
-                // Fetch chart data with Authorization header
-                const summaryResponse = await axios.get("http://localhost:3000/chart-data/summary", {
+
+                const summaryResponse = await axios.get("http://157.245.113.57:3000/chart-data/summary", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setChartData(summaryResponse.data);
 
-                const costResponse = await axios.get("http://localhost:3000/chart-data/cost-reduction", {
+                const costResponse = await axios.get("http://157.245.113.57:3000/chart-data/cost-reduction", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setCostReductionData(costResponse.data);
 
-                const performanceResponse = await axios.get("http://localhost:3000/chart-data/performance", {
+                const performanceResponse = await axios.get("http://157.245.113.57:3000/chart-data/performance", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setPerformanceData(performanceResponse.data);
-
             } catch (error) {
-                // If the token is expired or invalid, handle the error
                 if (error.response && error.response.status === 401) {
-                    // Remove token from localStorage if expired
                     localStorage.removeItem("token");
                     console.log("Token expired or invalid. Redirecting to login...");
-                    navigate("/"); // Redirect to login page
+                    navigate("/");
                 } else {
                     console.error("Error fetching chart data:", error);
                 }
@@ -50,7 +55,7 @@ function Summary() {
         };
 
         fetchChartData();
-    },  []);
+    }, []);
 
     return (
         <div style={styles.container}>
@@ -63,33 +68,38 @@ function Summary() {
                     <div style={styles.chartContainer}>
                         <Line data={lineChartData()} options={{ responsive: true }} />
                     </div>
-                    <p style={styles.subHeader}>The line chart shows a rise in AI-related research papers from 45 in Q1 to 120 in Q4, 
-                        reflecting growing interest and advancements in the field. This trend highlights increasing investment in AI innovations and academic research.</p>
-                    <br/> <br/> <br/> <br/>
+                    <p style={styles.chartDescription}>
+                        The line chart shows a rise in AI-related research papers from 45 in Q1 to 120 in Q4, 
+                        reflecting growing interest and advancements in the field.
+                    </p>
+
                     {/* Pie Chart */}
                     <h3 style={styles.subHeader}>AI Adoption by Sector (Pie Chart)</h3>
                     <div style={styles.chartContainer}>
                         <Pie data={pieChartData()} options={{ responsive: true }} />
                     </div>
-                    <p style={styles.subHeader}>The pie chart highlights AI adoption, with entertainment (85%) leading, followed by finance (70%), 
-                        healthcare (65%), and education (50%). It emphasizes how diverse industries are leveraging AI to enhance operations and user experience.</p>
-                    <br/> <br/> <br/> <br/>
+                    <p style={styles.chartDescription}>
+                        The pie chart highlights AI adoption, with entertainment (85%) leading, followed by finance (70%), 
+                        healthcare (65%), and education (50%).
+                    </p>
+
                     {/* Radar Chart */}
                     <h3 style={styles.subHeader}>AI Performance Metrics (Radar Chart)</h3>
                     <div style={styles.chartContainer}>
                         <Radar data={radarChartData()} options={{ responsive: true }} />
                     </div>
-                    <p style={styles.subHeader}>The radar chart evaluates metrics like latency (90%) and storage (85%), showing strong system efficiency with room for CPU and memory improvement. 
-                        These insights are critical for optimizing AI infrastructure performance</p>
-                    <br/> <br/> <br/> <br/>
+                    <p style={styles.chartDescription}>
+                        The radar chart evaluates metrics like latency (90%) and storage (85%), showing strong system efficiency with room for CPU and memory improvement.
+                    </p>
+
                     {/* Doughnut Chart */}
                     <h3 style={styles.subHeader}>Resource Allocation (Doughnut Chart)</h3>
                     <div style={styles.chartContainer}>
                         <Doughnut data={doughnutChartData()} options={{ responsive: true }} />
                     </div>
-                    <p style={styles.subHeader}>The doughnut chart shows resource distribution: compute (30%), storage (25%), networking (20%), and others (25%). 
-                        This balanced allocation ensures efficient functioning and scalability of AI systems across multiple use cases.</p>
-                    <br/> <br/>   
+                    <p style={styles.chartDescription}>
+                        The doughnut chart shows resource distribution: compute (30%), storage (25%), networking (20%), and others (25%).
+                    </p>
                 </>
             ) : (
                 <p>Loading chart data...</p>
@@ -119,7 +129,6 @@ const pieChartData = () => ({
         {
             data: [65, 50, 70, 85],
             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
         },
     ],
 });
@@ -133,7 +142,6 @@ const radarChartData = () => ({
             data: [80, 60, 75, 90, 85],
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
         },
     ],
 });
@@ -143,33 +151,50 @@ const doughnutChartData = () => ({
     labels: ['Compute', 'Storage', 'Networking', 'Other'],
     datasets: [
         {
-            data: [25, 30, 20, 25],
+            data: [30, 25, 20, 25],
             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
         },
     ],
 });
 
 const styles = {
     container: {
-        padding: "40px",
+        padding: "20px",
         textAlign: "center",
     },
     chartContainer: {
-        width: "50%",
+        width: "100%",
+        maxWidth: "600px",
         margin: "0 auto 30px",
     },
     subHeader: {
         fontSize: "20px",
-        fontWeight: "500",
+        fontWeight: "600",
         color: "#34495e",
-        marginBottom: "30px",
+        marginBottom: "20px",
     },
     header: {
-        textAlign: "center",
         fontSize: "24px",
         color: "#690815",
+        marginBottom: "30px",
+    },
+    chartDescription: {
+        fontSize: "16px",
+        color: "#555",
         marginBottom: "20px",
+        textAlign: "center",
+        padding: "0 10px",
+    },
+    "@media (max-width: 768px)": {
+        chartContainer: {
+            width: "90%",
+        },
+        subHeader: {
+            fontSize: "18px",
+        },
+        chartDescription: {
+            fontSize: "14px",
+        },
     },
 };
 

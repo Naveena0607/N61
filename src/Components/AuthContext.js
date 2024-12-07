@@ -11,11 +11,10 @@ export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [token, setToken] = useState(null);
 
-    //const login = () => setIsLoggedIn(true);
     const login = async (username, password) => {
         try {
 
-            const response = await axios.post("http://localhost:3000/login", { username, password });
+            const response = await axios.post("http://157.245.113.57:3000/login", { username, password });
             console.log("Login response:", response.data);
             const { token } = response.data;
 
@@ -39,26 +38,7 @@ export function AuthProvider({ children }) {
         }
     };
 
-    /*const register = async (username, password, setIsRegister) => {
-        try {
-            const response = await axios.post("http://localhost:3000/register", { username, password });
-            console.log("register response:", response.data);
-            const { token } = response.data;
-
-            // Decode token to extract user info if needed
-            const decoded = jwtDecode(token);
-
-            setIsRegister(false);
-            setToken(token);
-
-            localStorage.setItem("token", token); // Store token in localStorage
-        } catch (error) {
-            throw new Error("Login failed");
-        }
-    };*/
-
-
-    //const logout = () => setIsLoggedIn(false);
+    
     const logout = () => {
         setIsLoggedIn(false);
         setToken(null);

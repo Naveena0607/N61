@@ -3,10 +3,18 @@ import { Pie, Bar } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
-
 // Import Chart.js related modules
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale, RadialLinearScale } from 'chart.js';
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    RadialLinearScale,
+} from "chart.js";
 
 // Register chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale, RadialLinearScale);
@@ -14,12 +22,12 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, 
 function Reports() {
     const navigate = useNavigate();
     const [chartData, setChartData] = useState(null);
+
     useEffect(() => {
-        // Function to fetch chart data from the backend
         const fetchChartData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:3000/chart-data/reports", {
+                const response = await axios.get("http://157.245.113.57:3000/chart-data/reports", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -49,15 +57,11 @@ function Reports() {
                 };
 
                 setChartData({ pieData, barData });
-
-    
             } catch (error) {
-                // If the token is expired or invalid, handle the error
                 if (error.response && error.response.status === 401) {
-                    // Remove token from localStorage if expired
                     localStorage.removeItem("token");
                     console.log("Token expired or invalid. Redirecting to login...");
-                    navigate("/"); // Redirect to login page
+                    navigate("/");
                 } else {
                     console.error("Error fetching chart data:", error);
                 }
@@ -69,7 +73,9 @@ function Reports() {
 
     return (
         <div style={styles.container}>
-            <h2 id="reports-header" style={styles.header}>AI Adoption Rates in Different Sectors</h2>
+            <h2 id="reports-header" style={styles.header}>
+                AI Adoption Rates in Different Sectors
+            </h2>
             {chartData ? (
                 <>
                     {/* Pie Chart */}
@@ -77,14 +83,11 @@ function Reports() {
                         <Pie data={chartData.pieData} options={{ responsive: true }} />
                     </div>
                     <p id="pie-chart-description" style={styles.text}>
-                        This pie chart represents the adoption rate of AI in various sectors. The healthcare sector leads, followed by entertainment and finance, showing the increasing importance of AI technologies across industries. 
+                        This pie chart represents the adoption rate of AI in various sectors. The healthcare sector leads, followed by entertainment and finance, showing the increasing importance of AI technologies across industries.
                         <br />
                         <strong>Source:</strong> MySQL Database
                     </p>
-                    <br/>
-                    <br/><br/>
-                    <br/><br/>
-                    <br/>
+
                     {/* Bar Chart */}
                     <div style={styles.chartContainer} aria-labelledby="reports-header" aria-describedby="bar-chart-description">
                         <Bar data={chartData.barData} options={{ responsive: true }} />
@@ -105,7 +108,7 @@ function Reports() {
 // Styling for the component
 const styles = {
     container: {
-        padding: "40px",
+        padding: "20px",
         fontFamily: "'Arial', sans-serif",
     },
     header: {
@@ -115,17 +118,29 @@ const styles = {
         marginBottom: "20px",
     },
     chartContainer: {
-        width: "40%",
-        margin: "30px auto",
+        width: "90%",
+        maxWidth: "600px",
+        margin: "20px auto",
     },
     text: {
-        fontSize: "20px",
+        fontSize: "16px",
         textAlign: "center",
-        fontWeight: "500",
         color: "#34495e",
-        width: "1500px",
-        //marginBottom: "30px",
-        margin: "100px auto",
+        margin: "20px auto",
+        lineHeight: "1.5",
+    },
+    "@media (min-width: 768px)": {
+        text: {
+            fontSize: "18px",
+        },
+        chartContainer: {
+            maxWidth: "700px",
+        },
+    },
+    "@media (max-width: 768px)": {
+        text: {
+            fontSize: "14px",
+        },
     },
 };
 
