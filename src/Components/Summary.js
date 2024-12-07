@@ -29,17 +29,17 @@ function Summary() {
             try {
                 const token = localStorage.getItem("token");
 
-                const summaryResponse = await axios.get("http://157.245.113.57:3000/chart-data/summary", {
+                const summaryResponse = await axios.get("http://138.197.45.35:3000/chart-data/summary", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setChartData(summaryResponse.data);
 
-                const costResponse = await axios.get("http://157.245.113.57:3000/chart-data/cost-reduction", {
+                const costResponse = await axios.get("http://138.197.45.35:3000/chart-data/cost-reduction", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setCostReductionData(costResponse.data);
 
-                const performanceResponse = await axios.get("http://157.245.113.57:3000/chart-data/performance", {
+                const performanceResponse = await axios.get("http://138.197.45.35:3000/chart-data/performance", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setPerformanceData(performanceResponse.data);

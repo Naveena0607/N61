@@ -1,12 +1,14 @@
+require("dotenv").config(); // Load environment variables from .env
+
 const mysql = require("mysql2");
 
 const pool = mysql.createPool({
-    host: "databasenbad.c9s0a0wim2na.us-east-2.rds.amazonaws.com", // Replace with your MySQL host
-    user: "nsurakan",      // Replace with your MySQL username
-    password: "Navna*0607",      // Replace with your MySQL password
-    database: "nbad_chart_data_db", // Replace with your database name
+    host: process.env.DB_HOST,       // Loaded from .env
+    user: process.env.DB_USER,       // Loaded from .env
+    password: process.env.DB_PASSWORD, // Loaded from .env
+    database: process.env.DB_NAME,   // Loaded from .env
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT, 10) || 10, // Default to 10
     queueLimit: 0,
 });
 

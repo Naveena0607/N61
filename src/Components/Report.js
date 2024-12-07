@@ -27,7 +27,7 @@ function Reports() {
         const fetchChartData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://157.245.113.57:3000/chart-data/reports", {
+                const response = await axios.get("http://138.197.45.35:3000/chart-data/reports", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

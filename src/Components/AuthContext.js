@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
     const login = async (username, password) => {
         try {
 
-            const response = await axios.post("http://157.245.113.57:3000/login", { username, password });
+            const response = await axios.post("http://138.197.45.35:3000/login", { username, password });
             console.log("Login response:", response.data);
             const { token } = response.data;
 
